@@ -3,13 +3,17 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
 int mysys( char* command,char* wenjian)
 {
     pid_t pid;
     int status;
 	int fd_out = open(wenjian, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	dup2(fd_out, 1);
-	
+
     if(command == NULL)
     {
         return (1);
@@ -21,6 +25,7 @@ int mysys( char* command,char* wenjian)
     else if(pid == 0)
     {
         execl("/bin/sh", "sh", "-c", command, (char *)0);
+        close(fd_out);
         exit(11);
     }
     else
@@ -31,8 +36,8 @@ int mysys( char* command,char* wenjian)
 }
 int main()
 {
-    char str[1000],mingling[1000],wenjian[1000];
-	char *p;
+    char str[1000];
+	char *p,*mingling,*wenjian;
 	int i;
     while(1)
     {
@@ -40,10 +45,10 @@ int main()
         gets(str);
 		mingling= str;
 		wenjian = str;
-		
+
         if(strcmp(str,"exit") == 0)
             break;
-		
+
 		for(p=str;p!='\0';p++)
 		{
 			if(*p == '>')
