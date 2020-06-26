@@ -6,7 +6,7 @@
 
 void* xuanze(void *begin)//简单选择排序
 {//x[100]
-	int *x
+	int *x;
 	x=(int*)begin;
     int i,j,t,k;
 	for(i=0;i<9;i++)
@@ -30,8 +30,9 @@ int main()
 	int i;
 	struct result *result;
 	pthread_t worker1,worker2;
-	
-	
+
+
+	printf("before sort\n");
 	for(i=0; i<10 ;i++)//show
 		printf("%d ",pre[i]);
 	printf("\n");
@@ -40,18 +41,19 @@ int main()
     printf("\n");
     //result = malloc(sizeof(struct result));
     //result->sum = 3;
-    
+
     pthread_create(&worker1, NULL, xuanze, pre);
 	pthread_join(worker1, (void **)&pre);
 	pthread_create(&worker2, NULL, xuanze, las);
 	pthread_join(worker2, (void **)&las);
-	
+
+	printf("(after sort)pre:");
 	for(i=0; i<10 ;i++)//show
 		printf("%d ",pre[i]);
-	printf("\n");
+	printf("\n(after sort)las:");
 	for(i=0; i<10 ;i++)
 		printf("%d ",las[i]);
-	
+
 	int asd;
 	int *p=pre,*q=las;
     int xxx[20];
@@ -82,7 +84,10 @@ int main()
             jjj++;
         }
     }
-   
+
+	printf("\nanswer:\n");
+	for(i=0; i<20 ;i++)
+		printf("%d ",xxx[i]);
 
     return 0;
 }
