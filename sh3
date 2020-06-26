@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
+int mysys( char* command)
+{
+    pid_t pid;
+    int status;
+
+    if(command == NULL)
+    {
+        return (1);
+    }
+    if((pid = fork())<0)
+    {
+    	status = -1;
+    }
+    else if(pid == 0)
+    {
+        execl("/bin/sh", "sh", "-c", command, (char *)0);
+        exit(11);
+    }
+    else
+    {
+        wait( &status);
+    }
+    return status;
+}
+int main()
+{
+    char str[1000];
+	char *p,*mingling1,*mingling2;
+	int i;
+    while(1)
+    {
+        printf(">");
+        gets(str);
+		mingling1 = str;
+		mingling2 = str;
+
+        if(strcmp(str,"exit") == 0)
+            break;
+
+		for(p=str;p!='\0';p++)
+		{
+			if(*p == '|')
+			{
+				mingling1[p-str]='\0';
+				mingling2 = p+1;
+				break;
+			}
+		}
+		if(*p == '|')
+		{
+			mysys(mingling1);
+			mysys(mingling2);
+		}
+        else 
+			mysys(str);
+    }
+
+    return 0;
+}
